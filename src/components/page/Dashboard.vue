@@ -6,7 +6,7 @@
                     <div class="user-info">
                         <img src="../../assets/img/img.jpg" class="user-avator" alt />
                         <div class="user-info-cont">
-                            <div class="user-info-name">{{name}}</div>
+                            <div class="user-info-name">{{userName}}</div>
                             <div>{{role}}</div>
                         </div>
                     </div>
@@ -116,7 +116,8 @@ export default {
     name: 'dashboard',
     data() {
         return {
-            name: localStorage.getItem('ms_username'),
+            userName: localStorage.getItem('ms_username'),
+            authority: localStorage.getItem('authority'),
             todoList: [
                 {
                     title: '今天要修复100个bug',
@@ -223,7 +224,13 @@ export default {
     },
     computed: {
         role() {
-            return this.name === 'admin' ? '超级管理员' : '普通用户';
+            if (this.authority === 0) {
+                return '学生'
+            }else if (this.authority === 1) {
+                return '老师'
+            }else {
+                return '管理员'
+            }
         }
     },
     // created() {

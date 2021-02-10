@@ -4,15 +4,16 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
+    mode: 'history',
     routes: [
         {
             path: '/',
-            redirect: '/dashboard'
+            redirect: '/dashboard',
         },
         {
             path: '/',
             component: () => import(/* webpackChunkName: "home" */ '../components/common/Home.vue'),
-            meta: { title: '自述文件' },
+            meta: { title: '自述文件'},
             children: [
                 {
                     path: '/dashboard',
@@ -105,9 +106,21 @@ export default new Router({
             ]
         },
         {
-            path: '/login',
-            component: () => import(/* webpackChunkName: "login" */ '../components/page/Login.vue'),
-            meta: { title: '登录' }
+            path: '/index',
+            component: () => import(/* webpackChunkName: "index" */ '../components/page/Index.vue'),
+            meta: { title: '主页'},
+            children: [
+                {
+                    path: '/login',
+                    component: () => import(/* webpackChunkName: "login" */ '../components/page/Login.vue'),
+                    meta: { title: '登录' }
+                },
+                {
+                    path: '/registry',
+                    component: () => import(/* webpackChunkName: "registry" */ '../components/page/Registry.vue'),
+                    meta: { title: '注册' }
+                }
+            ]
         },
         {
             path: '*',

@@ -10,6 +10,11 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
 
+//引入axios
+const axios = require('axios');
+axios.defaults.baseURL = 'http://localhost:8091/api'
+Vue.prototype.$axios = axios
+
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
 Vue.use(ElementUI, {
@@ -24,8 +29,8 @@ const i18n = new VueI18n({
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} | vue-manage-system`;
     const role = localStorage.getItem('ms_username');
-    if (!role && to.path !== '/login') {
-        next('/login');
+    if (!role && to.path !== '/index') {
+        next('/index');
     } else if (to.meta.permission) {
         // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
         role === 'admin' ? next() : next('/403');
@@ -41,8 +46,12 @@ router.beforeEach((to, from, next) => {
     }
 });
 
+
+
 new Vue({
     router,
     i18n,
+    components: { App },
+    template: '<App/>',
     render: h => h(App)
 }).$mount('#app');
