@@ -51,9 +51,11 @@ export default {
                             localStorage.setItem('ms_username', userName);
                             const authority = successResponse.data.data.authority;
                             localStorage.setItem('authority', authority)
+                            const userId = successResponse.data.data.userId;
+                            localStorage.setItem('userid', userId);
                             this.$router.push('/');
                         }else {
-                            this.$message.error('登录失败！')
+                            this.$message.error('用户名或密码错误')
                         }
                     })
                 } else {

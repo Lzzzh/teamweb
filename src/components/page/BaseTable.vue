@@ -3,13 +3,13 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
-                    <i class="el-icon-lx-cascades"></i> 基础表格
+                    <i class="el-icon-lx-cascades"></i> 项目列表
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
             <div class="handle-box">
-                <el-button
+<!--                <el-button
                     type="primary"
                     icon="el-icon-delete"
                     class="handle-del mr10"
@@ -18,8 +18,8 @@
                 <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
                     <el-option key="1" label="广东省" value="广东省"></el-option>
                     <el-option key="2" label="湖南省" value="湖南省"></el-option>
-                </el-select>
-                <el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
+                </el-select>-->
+                <el-input v-model="query.name" placeholder="项目名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
             <el-table
@@ -28,15 +28,13 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange"
-            >
+                @selection-change="handleSelectionChange">
+
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-                <el-table-column prop="name" label="用户名"></el-table-column>
-                <el-table-column label="账户余额">
-                    <template slot-scope="scope">￥{{scope.row.money}}</template>
-                </el-table-column>
-                <el-table-column label="头像(查看大图)" align="center">
+<!--                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>-->
+                <el-table-column prop="projectId" label="项目ID" align="center"></el-table-column>
+                <el-table-column prop="projectName" label="项目名称" align="center"></el-table-column>
+<!--                <el-table-column label="头像(查看大图)" align="center">
                     <template slot-scope="scope">
                         <el-image
                             class="table-td-thumb"
@@ -44,17 +42,17 @@
                             :preview-src-list="[scope.row.thumb]"
                         ></el-image>
                     </template>
-                </el-table-column>
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column label="状态" align="center">
-                    <template slot-scope="scope">
-                        <el-tag
-                            :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"
-                        >{{scope.row.state}}</el-tag>
-                    </template>
+                </el-table-column>-->
+                <el-table-column prop="teacherName" label="指导老师" align="center"></el-table-column>
+                <el-table-column prop="progress" label="项目进度 (百分比)" align="center">
+<!--                    <template slot-scope="scope">-->
+<!--                        <el-tag-->
+<!--                            :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"-->
+<!--                        >{{scope.row.state}}</el-tag>-->
+<!--                    </template>-->
                 </el-table-column>
 
-                <el-table-column prop="date" label="注册时间"></el-table-column>
+                <el-table-column prop="createTime" label="立项时间" align="center"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
@@ -131,7 +129,7 @@ export default {
         getData() {
             fetchData(this.query).then(res => {
                 console.log(res);
-                this.tableData = res.list;
+                this.tableData = res.data;
                 this.pageTotal = res.pageTotal || 50;
             });
         },
@@ -182,6 +180,23 @@ export default {
         handlePageChange(val) {
             this.$set(this.query, 'pageIndex', val);
             this.getData();
+        },
+        projectList() {
+            const authority = localStorage.getItem("authority");
+            const userId = localStorage.getItem('userid')
+            if (authority === 0) {
+                this.$axios.get("/studentProjectList", {
+                    "studentId": userId
+                }).then(ResponseData => {
+                    if (ResponseData.data.code === 200) {
+
+                    }
+                })
+            }else if (authority === 1) {
+                this.$axios.get("/teacherProjectList", {
+                    "teacherId": userId
+                })
+            }
         }
     }
 };
