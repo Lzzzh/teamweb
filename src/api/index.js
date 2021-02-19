@@ -1,6 +1,6 @@
 import request from '../utils/request';
 
-export const fetchData = query => {
+/*export const fetchData = query => {
     return request({
         url: '/studentProjectList',
         method: 'get',
@@ -8,4 +8,5 @@ export const fetchData = query => {
             "studentId": "20171003334"
         }
     });
-};
+};*/
+

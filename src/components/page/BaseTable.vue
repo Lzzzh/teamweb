@@ -21,7 +21,9 @@
                 </el-select>-->
                 <el-input v-model="query.name" placeholder="项目名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
+                <el-button icon='el-icon-plus'>新增项目</el-button>
             </div>
+
             <el-table
                 :data="tableData"
                 border
@@ -53,7 +55,7 @@
                 </el-table-column>
 
                 <el-table-column prop="createTime" label="立项时间" align="center"></el-table-column>
-                <el-table-column label="操作" width="180" align="center">
+                <el-table-column v-if='query.show' label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"
@@ -96,21 +98,62 @@
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
+
     </div>
 </template>
 
 <script>
-import { fetchData } from '../../api/index';
+import request from '@/utils/request';
+export const fetchData = query => {
+    const authority = localStorage.getItem("authority");
+    const userId = localStorage.getItem("userid");
+    if (authority == 0) {
+        query.show = false;
+        return request({
+            url: '/studentProjectList',
+            method: 'post',
+            data: {
+            "userId": userId,
+            "searchText": query.name,
+            "pageIndex": query.pageIndex,
+            "pageSize": query.pageSize
+            }
+        })
+    }else if (authority == 1) {
+        return request({
+            url: '/teacherProjectList',
+            method: 'post',
+            data: {
+            "userId": userId,
+            "searchText": query.name,
+            "pageIndex": query.pageIndex,
+            "pageSize": query.pageSize
+            }
+        })
+    }else {
+        return request({
+            url: '/adminProjectList',
+            method: 'post',
+            data: {
+                "searchText": query.name,
+                "pageIndex": query.pageIndex,
+                "pageSize": query.pageSize
+            }
+        })
+    }
+};
 export default {
     name: 'basetable',
     data() {
         return {
             query: {
-                address: '',
+                // address: '',
                 name: '',
                 pageIndex: 1,
-                pageSize: 10
+                pageSize: 10,
+                show: true,
             },
+
             tableData: [],
             multipleSelection: [],
             delList: [],
@@ -129,8 +172,8 @@ export default {
         getData() {
             fetchData(this.query).then(res => {
                 console.log(res);
-                this.tableData = res.data;
-                this.pageTotal = res.pageTotal || 50;
+                this.tableData = res.data.records;
+                this.pageTotal = res.data.total;
             });
         },
         // 触发搜索按钮
@@ -145,7 +188,11 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
+
                     this.$message.success('删除成功');
+                    this.$axios.post('/deleteProject', {
+                        'projectId': row.projectId
+                    })
                     this.tableData.splice(index, 1);
                 })
                 .catch(() => {});
@@ -178,26 +225,9 @@ export default {
         },
         // 分页导航
         handlePageChange(val) {
-            this.$set(this.query, 'pageIndex', val);
+            this.query.pageIndex = val;
             this.getData();
         },
-        projectList() {
-            const authority = localStorage.getItem("authority");
-            const userId = localStorage.getItem('userid')
-            if (authority === 0) {
-                this.$axios.get("/studentProjectList", {
-                    "studentId": userId
-                }).then(ResponseData => {
-                    if (ResponseData.data.code === 200) {
-
-                    }
-                })
-            }else if (authority === 1) {
-                this.$axios.get("/teacherProjectList", {
-                    "teacherId": userId
-                })
-            }
-        }
     }
 };
 </script>
