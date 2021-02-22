@@ -15,7 +15,7 @@
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
                     <el-form-item label="选择器">
-                        <el-select v-model="form.region" placeholder="请选择">
+                        <el-select multiple v-model="form.region" placeholder="请选择">
                             <el-option key="bbk" label="步步高" value="bbk"></el-option>
                             <el-option key="xtc" label="小天才" value="xtc"></el-option>
                             <el-option key="imoo" label="imoo" value="imoo"></el-option>

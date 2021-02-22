@@ -1,4 +1,4 @@
-<template>
+<template :key='componentKey'>
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
@@ -7,7 +7,7 @@
                 </el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class="container">
+        <div class="container" >
             <div class="handle-box">
 <!--                <el-button
                     type="primary"
@@ -19,17 +19,18 @@
                     <el-option key="1" label="广东省" value="广东省"></el-option>
                     <el-option key="2" label="湖南省" value="湖南省"></el-option>
                 </el-select>-->
-                <el-input v-model="query.name" placeholder="项目名称" class="handle-input mr10"></el-input>
+                <el-input v-model.trim="query.projectName" placeholder="项目名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
-                <el-button icon='el-icon-plus'>新增项目</el-button>
+                <el-button icon='el-icon-plus' v-if='query.show' @click='addVisible = true'>新增项目</el-button>
             </div>
-
             <el-table
                 :data="tableData"
+
                 border
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
+
                 @selection-change="handleSelectionChange">
 
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
@@ -57,6 +58,11 @@
                 <el-table-column prop="createTime" label="立项时间" align="center"></el-table-column>
                 <el-table-column v-if='query.show' label="操作" width="180" align="center">
                     <template slot-scope="scope">
+                        <el-button
+                            type='text'
+                            icon='el-icon-more'
+                            @click='handleDetail(scope.row)'
+                        >详情</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-edit"
@@ -86,11 +92,15 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="用户名">
-                    <el-input v-model="form.name"></el-input>
+                <el-form-item label="项目名称">
+                    <el-input v-model="form.project.projectName"></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="form.address"></el-input>
+                <el-form-item label="项目进度">
+                    <el-input v-model="form.project.progress"></el-input>
+                </el-form-item>
+                <el-form-item label="学生列表">
+                    <el-cascader
+                        :props="{ checkStrictly: false, multiple:true}" clearable :options="studentListData" :show-all-levels="false"  filterable v-model="form.studentList"></el-cascader>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -99,14 +109,58 @@
             </span>
         </el-dialog>
 
+<!--        新增弹出框-->
+        <el-dialog title='新增' :visible.sync='addVisible' width='30%'>
+            <el-form ref='form' :model='form' label-width='70px'>
+                <el-form-item label='项目名称'>
+                    <el-input v-model='form.project.projectName'></el-input>
+                </el-form-item>
+                <el-form-item label="立项时间" style='width: 100%'>
+                    <el-date-picker
+                        type="date"
+                        placeholder="选择日期"
+                        v-model="form.project.createTime"
+                        value-format="yyyy-MM-dd"
+                        style="width: 100%;"
+                    ></el-date-picker>
+                </el-form-item>
+                <el-form-item label='项目进度'>
+                    <el-input v-model.trim='form.project.progress'></el-input>
+                </el-form-item>
+                <el-form-item label="学生列表">
+                    <el-cascader
+                        :props="{ checkStrictly: false, multiple:true}" clearable :options="studentListData" :show-all-levels="false"  filterable v-model="form.studentList"></el-cascader>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="addVisible = false">取 消</el-button>
+                <el-button type="primary" @click="handleAdd">确 定</el-button>
+            </span>
+        </el-dialog>
+<!--        项目详情框-->
+        <el-dialog title='学生列表' :visible.sync='detailVisible' width='30%'>
+            <el-table
+                :data='studentProjectList'
+                border
+                class="table"
+                ref="multipleTable"
+                header-cell-class-name="table-header"
+            >
+                <el-table-column prop="studentId" label="学号" align="center"></el-table-column>
+                <el-table-column prop="studentName" label="学生姓名" align="center"></el-table-column>
+            </el-table>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="detailVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 import request from '@/utils/request';
 export const fetchData = query => {
-    const authority = localStorage.getItem("authority");
-    const userId = localStorage.getItem("userid");
+    const userId = localStorage.getItem("userId");
+    const authority = localStorage.getItem("authority")
     if (authority == 0) {
         query.show = false;
         return request({
@@ -114,7 +168,7 @@ export const fetchData = query => {
             method: 'post',
             data: {
             "userId": userId,
-            "searchText": query.name,
+            "searchText": query.projectName,
             "pageIndex": query.pageIndex,
             "pageSize": query.pageSize
             }
@@ -125,7 +179,7 @@ export const fetchData = query => {
             method: 'post',
             data: {
             "userId": userId,
-            "searchText": query.name,
+            "searchText": query.projectName,
             "pageIndex": query.pageIndex,
             "pageSize": query.pageSize
             }
@@ -135,7 +189,7 @@ export const fetchData = query => {
             url: '/adminProjectList',
             method: 'post',
             data: {
-                "searchText": query.name,
+                "searchText": query.projectName,
                 "pageIndex": query.pageIndex,
                 "pageSize": query.pageSize
             }
@@ -147,25 +201,41 @@ export default {
     data() {
         return {
             query: {
-                // address: '',
-                name: '',
+                projectName: '',
                 pageIndex: 1,
                 pageSize: 10,
-                show: true,
+                show: true
             },
-
             tableData: [],
             multipleSelection: [],
             delList: [],
             editVisible: false,
+            addVisible: false,
+            detailVisible: false,
             pageTotal: 0,
-            form: {},
+            form: {
+                project: {
+                    projectId: '',
+                    projectName: '',
+                    progress: '',
+                    createTime: '',
+                    teacherId: ''
+                },
+                //传输的学生列表
+                studentList: []
+            },
+            //展示的学生列表
+            studentListData: [],
+            //项目相关的学生列表
+            studentProjectList: [],
             idx: -1,
-            id: -1
+            id: -1,
+            componentKey: 0
         };
     },
     created() {
         this.getData();
+        this.getStudent();
     },
     methods: {
         // 获取 easy-mock 的模拟数据
@@ -176,10 +246,37 @@ export default {
                 this.pageTotal = res.data.total;
             });
         },
+        getStudent() {
+            this.$axios.get('/studentList')
+                .then(responseData =>{
+                    this.studentListData = responseData.data.data;
+                }
+            )
+        },
         // 触发搜索按钮
         handleSearch() {
             this.$set(this.query, 'pageIndex', 1);
             this.getData();
+        },
+        // 项目的学生列表详情
+        handleDetail(row){
+            this.$axios.get('/studentListByProject', {
+                params: {
+                    'projectId': row.projectId
+                }
+            }).then(responseData => {
+                this.studentProjectList = responseData.data.data;
+            })
+            this.detailVisible = true;
+        },
+        // 新增操作
+        handleAdd(){
+            this.form.project.teacherId = localStorage.getItem('userId');
+            this.$axios.post('/addProject', this.form);
+            // this.$set(this.query, 'pageIndex', 1);
+            this.componentKey += 1;
+            // this.getData();
+            this.addVisible = false;
         },
         // 删除操作
         handleDelete(index, row) {
@@ -188,12 +285,12 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-
-                    this.$message.success('删除成功');
                     this.$axios.post('/deleteProject', {
                         'projectId': row.projectId
                     })
+                    this.$message.success('删除成功');
                     this.tableData.splice(index, 1);
+                    this.pageTotal -= 1;
                 })
                 .catch(() => {});
         },
@@ -213,21 +310,28 @@ export default {
         },
         // 编辑操作
         handleEdit(index, row) {
-            this.idx = index;
-            this.form = row;
             this.editVisible = true;
+            this.idx = index;
+            this.form.project.projectId = row.projectId;
+            this.form.project.projectName = row.projectName;
+            this.form.project.progress = row.progress;
+            this.form.project.createTime = row.createTime;
+            this.form.project.teacherId = localStorage.getItem('userId');
+            this.getData();
         },
         // 保存编辑
         saveEdit() {
-            this.editVisible = false;
+            this.$axios.post('/updateProject', this.form)
             this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
+            // this.$set(this.tableData, this.idx, this.form);
+            this.editVisible = false;
         },
         // 分页导航
         handlePageChange(val) {
             this.query.pageIndex = val;
             this.getData();
         },
+
     }
 };
 </script>

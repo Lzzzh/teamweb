@@ -116,7 +116,7 @@ export default {
     name: 'dashboard',
     data() {
         return {
-            userName: localStorage.getItem('ms_username'),
+            userName: localStorage.getItem('userName'),
             authority: localStorage.getItem('authority'),
             todoList: [
                 {
@@ -224,9 +224,9 @@ export default {
     },
     computed: {
         role() {
-            if (this.authority === 0) {
+            if (this.authority == 0) {
                 return '学生'
-            }else if (this.authority === 1) {
+            }else if (this.authority == 1) {
                 return '老师'
             }else {
                 return '管理员'

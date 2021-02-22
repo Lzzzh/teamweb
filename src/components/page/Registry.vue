@@ -57,7 +57,7 @@ export default {
                         if (successResponse.data.code === 200) {
                             this.$message.success('登录成功');
                             const userName = successResponse.data.data.userName;
-                            localStorage.setItem('ms_username', userName);
+                            localStorage.setItem('userName', userName);
                             this.$router.push('/');
                         }else {
                             this.$message.error('登录失败！')
