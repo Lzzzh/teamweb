@@ -1,25 +1,25 @@
 <template>
-        <div class="ms-login">
-            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
-                <el-form-item prop="username">
-                    <el-input v-model="param.userid" placeholder="学号">
-                        <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
-                    </el-input>
-                </el-form-item>
-                <el-form-item prop="password">
-                    <el-input
-                        type="password"
-                        placeholder="密码"
-                        v-model="param.password"
-                        @keyup.enter.native="submitForm()">
-                        <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
-                    </el-input>
-                </el-form-item>
-                <div class="login-btn">
-                    <el-button type="primary" @click="submitForm()">登录</el-button>
-                </div>
-            </el-form>
-        </div>
+    <div class="ms-login">
+        <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
+            <el-form-item prop="userid">
+                <el-input v-model="param.userid" placeholder="学号">
+                    <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
+                </el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+                <el-input
+                    type="password"
+                    placeholder="密码"
+                    v-model="param.password"
+                    @keyup.enter.native="submitForm()">
+                    <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
+                </el-input>
+            </el-form-item>
+            <div class="login-btn">
+                <el-button type="primary" @click="submitForm()">登录</el-button>
+            </div>
+        </el-form>
+    </div>
 </template>
 
 <script>

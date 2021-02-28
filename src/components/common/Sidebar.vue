@@ -69,7 +69,7 @@ export default {
                 {
                     icon: 'el-icon-lx-copy',
                     index: 'tabs',
-                    title: 'tab选项卡'
+                    title: '消息中心'
                 },
                 {
                     icon: 'el-icon-lx-calendar',
@@ -146,9 +146,14 @@ export default {
                     ]
                 },
                 {
-                    icon: 'el-icon-lx-redpacket_fill',
-                    index: '/donate',
-                    title: '支持作者'
+                    icon: 'el-icon-s-comment',
+                    index: 'sendmessage',
+                    title: '发送消息'
+                },
+                {
+                    icon: 'el-icon-user-solid',
+                    index: 'personalcenter',
+                    title: '个人中心'
                 }
             ]
         };

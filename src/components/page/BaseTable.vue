@@ -1,4 +1,4 @@
-<template :key='componentKey'>
+<template >
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
@@ -92,30 +92,30 @@
         <!-- 编辑弹出框 -->
         <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
             <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="项目名称">
-                    <el-input v-model="form.project.projectName"></el-input>
+                <el-form-item label="项目名称" prop='projectName'>
+                    <el-input v-model="form.project.projectName" ></el-input>
                 </el-form-item>
-                <el-form-item label="项目进度">
+                <el-form-item label="项目进度" prop='progress'>
                     <el-input v-model="form.project.progress"></el-input>
                 </el-form-item>
-                <el-form-item label="学生列表">
+                <el-form-item label="学生列表" prop='studentList'>
                     <el-cascader
-                        :props="{ checkStrictly: false, multiple:true}" clearable :options="studentListData" :show-all-levels="false"  filterable v-model="form.studentList"></el-cascader>
+                        :props="{ checkStrictly: false, multiple:true}" clearable :options="studentListData"  :show-all-levels="false"  filterable v-model="form.studentList"></el-cascader>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button @click="editVisible = false;">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
 
 <!--        新增弹出框-->
         <el-dialog title='新增' :visible.sync='addVisible' width='30%'>
-            <el-form ref='form' :model='form' label-width='70px'>
-                <el-form-item label='项目名称'>
+            <el-form ref='form' :model='form' label-width='80px' :rules='rules'>
+                <el-form-item label='项目名称' prop='projectName'>
                     <el-input v-model='form.project.projectName'></el-input>
                 </el-form-item>
-                <el-form-item label="立项时间" style='width: 100%'>
+                <el-form-item label="立项时间" style='width: 100%' prop='createTime'>
                     <el-date-picker
                         type="date"
                         placeholder="选择日期"
@@ -124,10 +124,10 @@
                         style="width: 100%;"
                     ></el-date-picker>
                 </el-form-item>
-                <el-form-item label='项目进度'>
+                <el-form-item label='项目进度' prop='progress'>
                     <el-input v-model.trim='form.project.progress'></el-input>
                 </el-form-item>
-                <el-form-item label="学生列表">
+                <el-form-item label="学生列表" prop='studentList'>
                     <el-cascader
                         :props="{ checkStrictly: false, multiple:true}" clearable :options="studentListData" :show-all-levels="false"  filterable v-model="form.studentList"></el-cascader>
                 </el-form-item>
@@ -213,6 +213,7 @@ export default {
             addVisible: false,
             detailVisible: false,
             pageTotal: 0,
+            // 发请求统一提交表单格式
             form: {
                 project: {
                     projectId: '',
@@ -224,13 +225,30 @@ export default {
                 //传输的学生列表
                 studentList: []
             },
+            /*// 编辑框专用form，用于placeholder
+            editForm: {
+                project: {
+                    projectId: '',
+                    projectName: '',
+                    progress: '',
+                    createTime: '',
+                    teacherId: ''
+                },
+                //传输的学生列表
+                studentList: []
+            },*/
             //展示的学生列表
             studentListData: [],
             //项目相关的学生列表
             studentProjectList: [],
             idx: -1,
             id: -1,
-            componentKey: 0
+            rules: {
+              projectName: [{required: true, message: "项目名不能为空", trigger: 'blur'}],
+              createTime: [{required: true, message: "立项时间不能为空", trigger: 'blur'}],
+              progress: [{ required: true, message: "项目进度不能为空", trigger: 'blur', min: 0, max: 100, type: 'number'}],
+              studentList: [{ required: true, message: "学生列表不能为空", trigger: 'blur' }]
+            }
         };
     },
     created() {
@@ -245,6 +263,9 @@ export default {
                 this.tableData = res.data.records;
                 this.pageTotal = res.data.total;
             });
+        },
+        resetFrom(formName) {
+          this.$refs[formName].resetFields();
         },
         getStudent() {
             this.$axios.get('/studentList')
@@ -272,11 +293,12 @@ export default {
         // 新增操作
         handleAdd(){
             this.form.project.teacherId = localStorage.getItem('userId');
-            this.$axios.post('/addProject', this.form);
-            // this.$set(this.query, 'pageIndex', 1);
-            this.componentKey += 1;
-            // this.getData();
-            this.addVisible = false;
+            this.$axios.post('/addProject', this.form)
+                .then(() => {
+                    this.$set(this.query, 'pageIndex', 1);
+                    this.getData();
+                    this.addVisible = false;
+                });
         },
         // 删除操作
         handleDelete(index, row) {
@@ -287,7 +309,7 @@ export default {
                 .then(() => {
                     this.$axios.post('/deleteProject', {
                         'projectId': row.projectId
-                    })
+                    })}).then(() => {
                     this.$message.success('删除成功');
                     this.tableData.splice(index, 1);
                     this.pageTotal -= 1;
@@ -315,16 +337,19 @@ export default {
             this.form.project.projectId = row.projectId;
             this.form.project.projectName = row.projectName;
             this.form.project.progress = row.progress;
-            this.form.project.createTime = row.createTime;
-            this.form.project.teacherId = localStorage.getItem('userId');
-            this.getData();
+            this.form.project.teacherId = row.teacherId;
+            this.form.studentList = this.studentProjectList;
         },
         // 保存编辑
         saveEdit() {
             this.$axios.post('/updateProject', this.form)
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            // this.$set(this.tableData, this.idx, this.form);
-            this.editVisible = false;
+                .then(() => {
+                    this.$message.success(`修改第 ${this.idx + 1} 行成功`);
+                    this.editVisible = false;
+                    // this.$set(this.tableData, this.idx, this.form);
+                    this.getData();
+                    this.resetFrom('form');
+                })
         },
         // 分页导航
         handlePageChange(val) {

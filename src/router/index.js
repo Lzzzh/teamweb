@@ -33,7 +33,7 @@ export default new Router({
                 {
                     path: '/tabs',
                     component: () => import(/* webpackChunkName: "tabs" */ '../components/page/Tabs.vue'),
-                    meta: { title: 'tab选项卡' }
+                    meta: { title: '消息中心' }
                 },
                 {
                     path: '/form',
@@ -99,9 +99,14 @@ export default new Router({
                     meta: { title: '403' }
                 },
                 {
-                    path: '/donate',
-                    component: () => import(/* webpackChunkName: "donate" */ '../components/page/Donate.vue'),
-                    meta: { title: '支持作者' }
+                    path: '/sendMessage',
+                    component: () => import(/* webpackChunkName: "403" */ '../components/page/SendMessage.vue'),
+                    meta: {title: '发送消息'}
+                },
+                {
+                    path: '/personalcenter',
+                    component: () => import(/* webpackChunkName: "personalcenter" */ '../components/page/PersonalCenter.vue'),
+                    meta: {title: '个人中心' }
                 }
             ]
         },

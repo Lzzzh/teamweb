@@ -1,6 +1,6 @@
 <template>
     <div class="ms-login">
-        <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
+        <el-form :model="param" :rules="rules" ref="registry" label-width="0px" class="ms-content">
             <el-form-item prop="userid">
                 <el-input v-model="param.userid" placeholder="学号">
                     <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
