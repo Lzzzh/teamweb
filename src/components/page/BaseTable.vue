@@ -25,7 +25,6 @@
             </div>
             <el-table
                 :data="tableData"
-
                 border
                 class="table"
                 ref="multipleTable"

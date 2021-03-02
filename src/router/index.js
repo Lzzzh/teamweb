@@ -59,12 +59,6 @@ export default new Router({
                     meta: { title: '文件上传' }
                 },
                 {
-                    // vue-schart组件
-                    path: '/charts',
-                    component: () => import(/* webpackChunkName: "chart" */ '../components/page/BaseCharts.vue'),
-                    meta: { title: 'schart图表' }
-                },
-                {
                     // 拖拽列表组件
                     path: '/drag',
                     component: () => import(/* webpackChunkName: "drag" */ '../components/page/DragList.vue'),
@@ -75,12 +69,6 @@ export default new Router({
                     path: '/dialog',
                     component: () => import(/* webpackChunkName: "dragdialog" */ '../components/page/DragDialog.vue'),
                     meta: { title: '拖拽弹框' }
-                },
-                {
-                    // 国际化组件
-                    path: '/i18n',
-                    component: () => import(/* webpackChunkName: "i18n" */ '../components/page/I18n.vue'),
-                    meta: { title: '国际化' }
                 },
                 {
                     // 权限页面
@@ -111,21 +99,9 @@ export default new Router({
             ]
         },
         {
-            path: '/index',
-            component: () => import(/* webpackChunkName: "index" */ '../components/page/Index.vue'),
-            meta: { title: '主页'},
-            children: [
-                {
-                    path: '/login',
-                    component: () => import(/* webpackChunkName: "login" */ '../components/page/Login.vue'),
-                    meta: { title: '登录' }
-                },
-                {
-                    path: '/registry',
-                    component: () => import(/* webpackChunkName: "registry" */ '../components/page/Registry.vue'),
-                    meta: { title: '注册' }
-                }
-            ]
+            path: '/login',
+            component: () => import(/* webpackChunkName: "login" */ '../components/page/Login.vue'),
+            meta: { title: '登录' }
         },
         {
             path: '*',

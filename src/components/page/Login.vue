@@ -1,25 +1,29 @@
 <template>
-    <div class="ms-login">
-        <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
-            <el-form-item prop="userid">
-                <el-input v-model="param.userid" placeholder="学号">
-                    <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
-                </el-input>
-            </el-form-item>
-            <el-form-item prop="password">
-                <el-input
-                    type="password"
-                    placeholder="密码"
-                    v-model="param.password"
-                    @keyup.enter.native="submitForm()">
-                    <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
-                </el-input>
-            </el-form-item>
-            <div class="login-btn">
-                <el-button type="primary" @click="submitForm()">登录</el-button>
-            </div>
-        </el-form>
+  <div class="login-wrap">
+    <div class='login-container'>
+      <div class="ms-login">
+          <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
+              <el-form-item prop="userid">
+                  <el-input v-model="param.userid" placeholder="用户名">
+                      <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
+                  </el-input>
+              </el-form-item>
+              <el-form-item prop="password">
+                  <el-input
+                      type="password"
+                      placeholder="密码"
+                      v-model="param.password"
+                      @keyup.enter.native="submitForm()">
+                      <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
+                  </el-input>
+              </el-form-item>
+              <div class="login-btn">
+                  <el-button type="primary" @click="submitForm()">登录</el-button>
+              </div>
+          </el-form>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -31,7 +35,7 @@ export default {
                 password: '',
             },
             rules: {
-                userid: [{ required: true, message: '请输入学号', trigger: 'blur' }],
+                userid: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
                 password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
             },
             responseResult: [],
@@ -53,6 +57,8 @@ export default {
                             localStorage.setItem('authority', authority)
                             const userId = successResponse.data.data.userId;
                             localStorage.setItem('userId', userId);
+                            const lastLoginTime = successResponse.data.data.lastLoginTime;
+                            localStorage.setItem('lastLoginTime', lastLoginTime);
                             this.$router.push('/');
                         }else {
                             this.$message.error('用户名或密码错误')
@@ -71,6 +77,18 @@ export default {
 
 <style scoped>
 
+.login-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-image: url(../../assets/img/login-bg.jpg);
+  background-size: 100%;
+}
+.login-container{
+  margin: auto;
+  height: 100%;
+}
+
 .ms-title {
     width: 100%;
     line-height: 50px;
@@ -80,14 +98,14 @@ export default {
     border-bottom: 1px solid #ddd;
 }
 .ms-login {
-    /*position: absolute;*/
-    /*left: 50%;*/
-    /*top: 50%;*/
+    position: absolute;
+    left: 50%;
+    top: 50%;
     width: 350px;
-    /*margin: -200px 0 0 -175px;*/
+    margin: -200px 0 0 -175px;
     border-radius: 5px;
-    /*background: rgba(255, 255, 255, 0.3);*/
-    /*overflow: hidden;*/
+    background: rgba(255, 255, 255, 0.3);
+    overflow: hidden;
 }
 .ms-content {
     padding: 20px 20px;
