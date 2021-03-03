@@ -9,7 +9,7 @@
           {{item.projectName}}
         </el-col>
         <el-col>
-          <el-progress  :percentage='item.progress' color="#42b983" >{{item.projectName}}</el-progress>
+          <el-progress  :percentage='item.progress' :color="setColor(item.progress)" >{{item.projectName}}</el-progress>
         </el-col>
       </el-row>
     </div>
@@ -48,6 +48,15 @@ export default {
           this.progressData = responseData.data.data;
         })
       }
+    },
+    setColor(progress) {
+        if (progress >= 0 && progress <= 30) {
+            return '#F56C6C';
+        }else if (progress > 30 && progress <= 70) {
+            return '#E6A23C';
+        }else {
+            return '#42b983';
+        }
     }
   }
 };

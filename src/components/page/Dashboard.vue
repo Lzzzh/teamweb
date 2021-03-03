@@ -69,7 +69,7 @@
                         <el-table-column width="40">
                           <template slot-scope="scope">
                             <el-form-item :prop="'todoList.' + scope.$index + 'status'">
-                              <el-checkbox v-model="scope.row.status"></el-checkbox>
+                              <el-checkbox v-model="scope.row.status" @change='setStatus(scope.row)'></el-checkbox>
                             </el-form-item>
                           </template>
                         </el-table-column>
@@ -86,8 +86,8 @@
                           </template>
                         </el-table-column>
                         <el-table-column width="60">
-                          <template>
-                            <i class="el-icon-delete"></i>
+                          <template slot-scope="scope">
+                            <i class="el-icon-delete" @click='handleDelete(scope.$index, scope.row)'></i>
                           </template>
                         </el-table-column>
                       </el-table>
@@ -102,7 +102,6 @@
 <script>
 import Schart from 'vue-schart';
 import Progress from '@/components/page/Progress';
-import bus from '../common/bus';
 export default {
     name: 'dashboard',
     data() {
@@ -186,8 +185,26 @@ export default {
             };
             this.form.todoList.push(obj);
         },
-        handleDelete() {
-
+        handleDelete(index, row) {
+            this.$confirm('确定要删除吗？', '提示', {
+                type: 'warning'
+            }).then(() => {
+                if (row.content.trim().length !== 0) {
+                    this.$axios.get('/deleteTodo', {
+                    params: {
+                        todoId: row.todoId
+                    }})
+                }
+                this.form.todoList.splice(index, 1);
+            }).catch(() => {});
+        },
+        setStatus(row) {
+            this.$axios.get('/setStatus', {
+                params: {
+                    todoId: row.todoId,
+                    status: row.status
+                }
+            })
         }
         // handleListener() {
         //     bus.$on('collapse', this.handleBus);

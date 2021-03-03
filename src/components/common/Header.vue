@@ -56,7 +56,7 @@ export default {
             collapse: false,
             fullscreen: false,
             name: 'linxin',
-            message: 2
+            message: localStorage.getItem('messageCount')
         };
     },
     computed: {
