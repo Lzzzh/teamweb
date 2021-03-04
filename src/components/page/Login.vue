@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import {mapMutations} from "vuex";
+
 export default {
     data: function() {
         return {
@@ -39,9 +41,11 @@ export default {
                 password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
             },
             responseResult: [],
+            userToken: ''
         };
     },
     methods: {
+        ...mapMutations(['changeLogin']),
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
@@ -50,16 +54,15 @@ export default {
                         userPassword: this.param.password
                     }).then(successResponse => {
                         if (successResponse.data.code === 200) {
-                            this.$message.success('登录成功');
-                            const userName = successResponse.data.data.userName;
-                            localStorage.setItem('userName', userName);
-                            const authority = successResponse.data.data.authority;
-                            localStorage.setItem('authority', authority)
-                            const userId = successResponse.data.data.userId;
-                            localStorage.setItem('userId', userId);
-                            const lastLoginTime = successResponse.data.data.lastLoginTime;
-                            localStorage.setItem('lastLoginTime', lastLoginTime);
+                            const data = successResponse.data.data;
+                            localStorage.setItem('userName', data.userName);
+                            localStorage.setItem('authority', data.authority)
+                            localStorage.setItem('userId', data.userId);
+                            localStorage.setItem('lastLoginTime', data.lastLoginTime);
+                            this.userToken = data.token;
+                            this.changeLogin({ Authorization: this.userToken });
                             this.$router.push('/');
+                            this.$message.success('登录成功');
                         }else {
                             this.$message.error('用户名或密码错误')
                         }
