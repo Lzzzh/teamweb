@@ -9,11 +9,13 @@ const service = axios.create({
 
 service.interceptors.request.use(
     config => {
+        if (localStorage.getItem('Authorization')) {
+            config.headers.Authorization = localStorage.getItem('Authorization');
+        }
         return config;
     },
     error => {
-        console.log(error);
-        return Promise.reject();
+        return Promise.reject(error);
     }
 );
 

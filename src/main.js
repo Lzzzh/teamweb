@@ -59,9 +59,8 @@ router.beforeEach((to, from, next) => {
 axios.interceptors.request.use(
     config => {
         if (localStorage.getItem('Authorization')) {
-            config.headers.Token = localStorage.getItem('Authorization');
+            config.headers.Authorization = localStorage.getItem('Authorization');
         }
-
         return config;
     },
     error => {
