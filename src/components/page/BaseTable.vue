@@ -9,16 +9,6 @@
         </div>
         <div class="container" >
             <div class="handle-box">
-<!--                <el-button
-                    type="primary"
-                    icon="el-icon-delete"
-                    class="handle-del mr10"
-                    @click="delAllSelection"
-                >批量删除</el-button>
-                <el-select v-model="query.address" placeholder="地址" class="handle-select mr10">
-                    <el-option key="1" label="广东省" value="广东省"></el-option>
-                    <el-option key="2" label="湖南省" value="湖南省"></el-option>
-                </el-select>-->
                 <el-input v-model.trim="query.projectName" placeholder="项目名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 <el-button icon='el-icon-plus' v-if='query.show' @click='addVisible = true'>新增项目</el-button>
@@ -29,31 +19,11 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
-
                 @selection-change="handleSelectionChange">
-
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-<!--                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>-->
                 <el-table-column prop="projectId" label="项目ID" align="center"></el-table-column>
                 <el-table-column prop="projectName" label="项目名称" align="center"></el-table-column>
-<!--                <el-table-column label="头像(查看大图)" align="center">
-                    <template slot-scope="scope">
-                        <el-image
-                            class="table-td-thumb"
-                            :src="scope.row.thumb"
-                            :preview-src-list="[scope.row.thumb]"
-                        ></el-image>
-                    </template>
-                </el-table-column>-->
                 <el-table-column prop="teacherName" label="指导老师" align="center"></el-table-column>
-                <el-table-column prop="progress" label="项目进度 (百分比)" align="center">
-<!--                    <template slot-scope="scope">-->
-<!--                        <el-tag-->
-<!--                            :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"-->
-<!--                        >{{scope.row.state}}</el-tag>-->
-<!--                    </template>-->
-                </el-table-column>
-
+                <el-table-column prop="progress" label="项目进度 (百分比)" align="center"></el-table-column>
                 <el-table-column prop="createTime" label="立项时间" align="center"></el-table-column>
                 <el-table-column v-if='query.show' label="操作" width="180" align="center">
                     <template slot-scope="scope">

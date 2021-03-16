@@ -21,11 +21,6 @@ export default new Router({
                     meta: { title: '主页' }
                 },
                 {
-                    path: '/icon',
-                    component: () => import(/* webpackChunkName: "icon" */ '../components/page/Icon.vue'),
-                    meta: { title: '自定义图标' }
-                },
-                {
                     path: '/table',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
                     meta: { title: '项目列表' }
@@ -36,39 +31,20 @@ export default new Router({
                     meta: { title: '消息中心' }
                 },
                 {
+                    path: '/sendMessage',
+                    component: () => import(/* webpackChunkName: "sendMessage" */ '../components/page/SendMessage.vue'),
+                    meta: {title: '发送消息'}
+                },
+                {
                     path: '/form',
                     component: () => import(/* webpackChunkName: "form" */ '../components/page/BaseForm.vue'),
                     meta: { title: '基本表单' }
-                },
-                {
-                    // 富文本编辑器组件
-                    path: '/editor',
-                    component: () => import(/* webpackChunkName: "editor" */ '../components/page/VueEditor.vue'),
-                    meta: { title: '富文本编辑器' }
-                },
-                {
-                    // markdown组件
-                    path: '/markdown',
-                    component: () => import(/* webpackChunkName: "markdown" */ '../components/page/Markdown.vue'),
-                    meta: { title: 'markdown编辑器' }
                 },
                 {
                     // 图片上传组件
                     path: '/upload',
                     component: () => import(/* webpackChunkName: "upload" */ '../components/page/Upload.vue'),
                     meta: { title: '文件上传' }
-                },
-                {
-                    // 拖拽列表组件
-                    path: '/drag',
-                    component: () => import(/* webpackChunkName: "drag" */ '../components/page/DragList.vue'),
-                    meta: { title: '拖拽列表' }
-                },
-                {
-                    // 拖拽Dialog组件
-                    path: '/dialog',
-                    component: () => import(/* webpackChunkName: "dragdialog" */ '../components/page/DragDialog.vue'),
-                    meta: { title: '拖拽弹框' }
                 },
                 {
                     // 权限页面
@@ -87,13 +63,18 @@ export default new Router({
                     meta: { title: '403' }
                 },
                 {
-                    path: '/sendMessage',
-                    component: () => import(/* webpackChunkName: "403" */ '../components/page/SendMessage.vue'),
-                    meta: {title: '发送消息'}
+                    path: '/sharePaper',
+                    component: () => import(/* webpackChunkName: "sharePaper" */ '../components/page/SharePaper.vue'),
+                    meta: {title: '分享论文'}
                 },
                 {
-                    path: '/personalcenter',
-                    component: () => import(/* webpackChunkName: "personalcenter" */ '../components/page/PersonalCenter.vue'),
+                    path: '/readPaper',
+                    component: () => import(/* webpackChunkName: "readPaper" */ '../components/page/ReadPaper.vue'),
+                    meta: {title: '阅读论文'}
+                },
+                {
+                    path: '/personalCenter',
+                    component: () => import(/* webpackChunkName: "personalCenter" */ '../components/page/PersonalCenter.vue'),
                     meta: {title: '个人中心' }
                 }
             ]

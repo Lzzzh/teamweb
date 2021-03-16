@@ -2,7 +2,7 @@
     <div class="">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-copy"></i> 消息中心</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-message"></i> 消息中心</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="container">
@@ -83,8 +83,8 @@
                 message: 'first',
                 showHeader: false,
                 messageStatusForm: {
+                    id: '',
                     userId: '',
-                    createTime: '',
                     status: ''
                 },
                 unread: [],
@@ -99,7 +99,7 @@
             // 标记为已读
             handleRead(index, row) {
                 this.messageStatusForm.userId = localStorage.getItem('userId');
-                this.messageStatusForm.createTime = row.createTime;
+                this.messageStatusForm.id = row.id;
                 this.messageStatusForm.status = 1;
                 this.$axios.post('/setMessageStatus', this.messageStatusForm)
                     .then(() => {
@@ -113,7 +113,7 @@
                 if (this.unread.length !== 0) {
                     this.unread.forEach((form) => {
                       this.messageStatusForm.userId = localStorage.getItem('userId');
-                      this.messageStatusForm.createTime = form.createTime;
+                      this.messageStatusForm.id = form.id;
                       this.messageStatusForm.status = 1;
                       this.$axios.post('/setMessageStatus', this.messageStatusForm)
                     })
@@ -127,7 +127,7 @@
             // 删除单条
             handleDel(index, row) {
                 this.messageStatusForm.userId = localStorage.getItem('userId');
-                this.messageStatusForm.createTime = row.createTime;
+                this.messageStatusForm.id = row.id;
                 this.messageStatusForm.status = 2;
                 this.$axios.post('/setMessageStatus', this.messageStatusForm)
                     .then(() => {
@@ -139,10 +139,14 @@
             handleDelAll() {
                 if (this.read.length !== 0) {
                     this.read.forEach((form) => {
-                    this.messageStatusForm.userId = localStorage.getItem('userId');
-                    this.messageStatusForm.createTime = form.createTime;
-                    this.messageStatusForm.status = 2;
-                    this.$axios.post('/setMessageStatus', this.messageStatusForm)
+                    const userId = localStorage.getItem('userId');
+                    const id = form.id;
+                    const status = 2;
+                    this.$axios.post('/setMessageStatus', {
+                        id: id,
+                        userId: userId,
+                        status: status
+                        })
                     })
                     const item = this.read.splice(0, this.read.length);
                     console.log(item);
@@ -156,7 +160,7 @@
             // 还原
             handleRestore(index, row) {
                 this.messageStatusForm.userId = localStorage.getItem('userId');
-                this.messageStatusForm.createTime = row.createTime;
+                this.messageStatusForm.id = row.id;
                 this.messageStatusForm.status = 1;
                 this.$axios.post('/setMessageStatus', this.messageStatusForm)
                     .then(() => {
@@ -168,11 +172,12 @@
             handleEmpty() {
                 if (this.recycle.length !== 0) {
                     this.recycle.forEach((form) => {
-                      this.messageStatusForm.userId = localStorage.getItem('userId');
-                      this.messageStatusForm.createTime = form.createTime;
-                      this.$axios.post('/deleteMessage', this.messageStatusForm)
+                      const id = form.id;
+                      this.$axios.post('/deleteMessage', {
+                          id: id
+                      })
                     })
-                    const item = this.recycle.splice(0, this.read.recycle);
+                    this.recycle.splice(0, this.recycle.length);
                     this.$message.success("清空成功")
                 }else {
                     this.$message.error("已经清空了")
@@ -187,6 +192,7 @@
                     const arr = responseData.data.data;
                     arr.forEach((item, index) => {
                         const msg = {
+                            id: item.id,
                             content: item.content,
                             createTime: item.createTime,
                             senderName: item.senderName

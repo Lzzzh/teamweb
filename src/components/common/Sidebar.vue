@@ -67,9 +67,14 @@ export default {
                     title: '项目列表'
                 },
                 {
-                    icon: 'el-icon-lx-copy',
+                    icon: 'el-icon-message',
                     index: 'tabs',
                     title: '消息中心'
+                },
+                {
+                    icon: 'el-icon-s-comment',
+                    index: 'sendMessage',
+                    title: '发送消息'
                 },
                 {
                     icon: 'el-icon-lx-calendar',
@@ -101,26 +106,6 @@ export default {
                     ]
                 },
                 {
-                    icon: 'el-icon-lx-emoji',
-                    index: 'icon',
-                    title: '自定义图标'
-                },
-                {
-                    icon: 'el-icon-rank',
-                    index: '6',
-                    title: '拖拽组件',
-                    subs: [
-                        {
-                            index: 'drag',
-                            title: '拖拽列表'
-                        },
-                        {
-                            index: 'dialog',
-                            title: '拖拽弹框'
-                        }
-                    ]
-                },
-                {
                     icon: 'el-icon-lx-warn',
                     index: '7',
                     title: '错误处理',
@@ -136,13 +121,18 @@ export default {
                     ]
                 },
                 {
-                    icon: 'el-icon-s-comment',
-                    index: 'sendmessage',
-                    title: '发送消息'
+                    icon: 'el-icon-document',
+                    index: 'sharePaper',
+                    title: '分享论文'
+                },
+                {
+                    icon: 'el-icon-reading',
+                    index: 'readPaper',
+                    title: '阅读论文'
                 },
                 {
                     icon: 'el-icon-user-solid',
-                    index: 'personalcenter',
+                    index: 'personalCenter',
                     title: '个人中心'
                 }
             ]

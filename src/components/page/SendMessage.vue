@@ -47,7 +47,7 @@ export default {
     this.getUserList();
   },
   methods: {
-    getUserList() {
+      getUserList() {
       this.$axios.get('/getUserList', )
           .then(responseData => {
               const userId = localStorage.getItem('userId');
@@ -76,7 +76,6 @@ export default {
       }
     },
     resetForm() {
-
     },
   }
 };
