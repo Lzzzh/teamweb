@@ -15,14 +15,14 @@
                         :data='pageForm'
                         style='width: 50%'
                         class="upload-demo"
-                        accept='.doc, .docx, .pdf'
+                        accept='.pdf'
                         ref="upload"
                         action="http://localhost:8093/file/sharePaper"
                         :file-list="fileList"
                         :on-change='handleChange'
                         :auto-upload="false">
                         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                        <div slot="tip" class="el-upload__tip">只能上传pdf/word文件，不能超过10M</div>
+                        <div slot="tip" class="el-upload__tip">只能上传pdf文件，不能超过10M</div>
                     </el-upload>
                 </el-form-item>
                 <el-form-item label="收件人" prop='receiverList'>

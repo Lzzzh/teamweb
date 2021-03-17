@@ -31,7 +31,7 @@
                         <el-button
                             type="text"
                             icon="el-icon-delete"
-                            class="red"
+                            style='color: red'
                             @click="handleDelete(scope.$index, scope.row)"
                         >删除</el-button>
                     </template>
@@ -90,7 +90,7 @@ export default {
         this.getData();
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
+        //获取table数据
         getData() {
             fetchData(this.query).then(res => {
                 console.log(res);
@@ -98,18 +98,20 @@ export default {
                 this.pageTotal = res.data.total;
             });
         },
-        resetFrom(formName) {
-            this.$refs[formName].resetFields();
-        },
         // 删除操作
         handleDelete(index, row) {
+            const userId = localStorage.getItem('userId');
             // 二次确认删除
             this.$confirm('确定要删除吗？', '提示', {
                 type: 'warning'
             })
                 .then(() => {
-                    this.$axios.post('/deleteProject', {
-                        'projectId': row.projectId
+                    file('/deletePaper', {
+                        method: 'post',
+                        data: {
+                            'userId': userId,
+                            'fileName': row.fileName
+                        }
                     })}).then(() => {
                 this.$message.success('删除成功');
                 this.tableData.splice(index, 1);
@@ -126,6 +128,7 @@ export default {
             this.query.pageIndex = val;
             this.getData();
         },
+        //下载论文
         handleDownload(row) {
             const userId = localStorage.getItem('userId');
             file('/downloadPaper',
@@ -133,8 +136,8 @@ export default {
                     method: 'post',
                     responseType: 'blob',    //接收类型设置，否者返回字符型
                     data: {
-                        userId: userId,
-                        fileName: row.fileName
+                        'userId': userId,
+                        'fileName': row.fileName
                     }}).then(res => {
                         const blob = res
                         const reader = new FileReader()
@@ -148,7 +151,23 @@ export default {
                             document.body.removeChild(a)
                     }
                 })
-
+        },
+        //预览论文
+        handlePreview(row){
+            const userId = localStorage.getItem('userId');
+            file('/downloadPaper',
+                {
+                    method: 'post',
+                    responseType: 'blob',    //接收类型设置，否者返回字符型
+                    data: {
+                        userId: userId,
+                        fileName: row.fileName
+                    }}).then(blob => {
+                        let url = window.URL.createObjectURL(new Blob([blob], {type: blob.type}));
+                        let html = "<embed width='100%' height='100%' name='plugin' id='plugin' type='application/pdf' src='" + url + "'>";
+                        let newwindow = window.open('','_blank','');
+                        newwindow.document.write(html);
+                })
         }
 
     }

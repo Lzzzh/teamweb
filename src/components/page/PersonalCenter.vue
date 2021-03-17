@@ -22,17 +22,19 @@
           <el-form-item label="个人邮箱" style='width: 50%' prop='userEmail'>
             <el-input v-model.trim='userForm.userEmail'></el-input>
           </el-form-item>
-<!--          <el-form-item label='个人头像'>
+          <el-form-item label='个人头像'>
             <el-upload
+                accept='image/jpeg,image/jpg,image/png'
+                :data='userIdForm'
+                :headers='headers'
                 class="upload-demo"
-                drag
-                action="http://127.0.0.1/api/userPhoto"
+                action="http://localhost:8093/file/uploadUserPhoto"
                 multiple>
               <i class="el-icon-upload"></i>
-              <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              <div class="el-upload__text"><em>点击上传</em></div>
               <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
             </el-upload>
-          </el-form-item>-->
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">提交</el-button>
             <el-button @click='resetForm'>清空</el-button>
@@ -77,10 +79,16 @@ export default {
           userEmail: '',
           photo: ''
         },
+        userIdForm: {
+            userId: localStorage.getItem('userId')
+        },
         rules: {
           // userPassword: [{ trigger: 'blur', validator: validatePass}],
           userPasswordConfirm: [{ trigger: 'blur', validator: validatePass2 }]
-        }
+        },
+          headers: {
+              Authorization: localStorage.getItem('Authorization')
+          }
       };
     },
   components: {
