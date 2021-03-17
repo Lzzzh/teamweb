@@ -75,6 +75,7 @@ export default {
                 pageIndex: 1,
                 pageSize: 10,
             },
+            userPhotoUrl: '',
             tableData: [],
             multipleSelection: [],
             delList: [],

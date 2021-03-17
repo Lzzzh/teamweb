@@ -29,7 +29,8 @@
                 </div>
                 <!-- 用户头像 -->
                 <div class="user-avator">
-                    <img src="../../assets/img/img.jpg" />
+                    <img v-if='image' :src="this.userPhoto" />
+                    <img v-if='!image' src="../../assets/img/gdufs.jpg"  />
                 </div>
                 <!-- 用户名下拉菜单 -->
                 <el-dropdown class="user-name" trigger="click" @command="handleCommand">
@@ -47,12 +48,14 @@
 </template>
 <script>
 import bus from '../common/bus';
+import file from '@/utils/file';
 export default {
     data() {
         return {
+            image: false,
             collapse: false,
             fullscreen: false,
-            name: 'linxin',
+            name: 'haoge',
             message: localStorage.getItem('messageCount')
         };
     },
@@ -101,7 +104,23 @@ export default {
                 }
             }
             this.fullscreen = !this.fullscreen;
-        }
+        },
+        // 用户头像
+        getUserPhoto() {
+            const userId = localStorage.getItem('userId');
+            file('/getUserPhoto', {
+                method: 'get',
+                params: {
+                    'userId': userId
+                },
+                responseType: 'blob'
+            }).then((blob) => {
+                if (blob.size > 0) {
+                    this.userPhoto = window.URL.createObjectURL(new Blob([blob], { type: blob.type }));
+                    this.image = true;
+                }
+            })
+        },
     },
     mounted() {
         if (document.body.clientWidth < 1500) {

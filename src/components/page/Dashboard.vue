@@ -4,7 +4,8 @@
             <el-col :span="8" style='height: 100%'>
                   <el-card shadow="hover" class="mgb20" style="height:252px;">
                     <div class="user-info">
-                      <img src="../../assets/img/img.jpg" class="user-avator" alt />
+                        <img v-if='image' :src="this.userPhoto" class="user-avator" alt />
+                        <img v-if='!image' src="../../assets/img/gdufs.jpg" class="user-avator" alt />
                       <div class="user-info-cont">
                         <div class="user-info-name">{{userName}}</div>
                         <div>{{role}}</div>
@@ -100,8 +101,9 @@
 </template>
 
 <script>
-import Schart from 'vue-schart';
+import file from '@/utils/file';
 import Progress from '@/components/page/Progress';
+
 export default {
     name: 'dashboard',
     data() {
@@ -109,6 +111,8 @@ export default {
             userName: localStorage.getItem('userName'),
             authority: localStorage.getItem('authority'),
             lastLoginTime: localStorage.getItem('lastLoginTime'),
+            userPhoto: '',
+            image: false,
             rules: {
                 content: [{required: true, message: '内容不能为空！', trigger: 'blur'}]
             },
@@ -125,7 +129,6 @@ export default {
         };
     },
     components: {
-        Schart,
         Progress
     },
     computed: {
@@ -152,6 +155,7 @@ export default {
     // },
   created() {
       this.getTodoList();
+      this.getUserPhoto();
   },
   methods: {
         changeDate() {
@@ -161,6 +165,7 @@ export default {
                 item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
             });
         },
+        //待办列表
         getTodoList() {
             this.$axios.get('/getTodoList', {
                 params: {
@@ -170,6 +175,7 @@ export default {
                 this.form.todoList = responseData.data.data;
             })
         },
+        //提交待办列表
         onSubmit() {
             this.$axios.post('/updateTodoList', this.form.todoList)
                 .then(() => {
@@ -205,7 +211,23 @@ export default {
                     status: row.status
                 }
             })
-        }
+        },
+        // 用户头像
+        getUserPhoto() {
+            const userId = localStorage.getItem('userId');
+            file('/getUserPhoto', {
+                method: 'get',
+                params: {
+                    'userId': userId
+                },
+                responseType: 'blob'
+            }).then((blob) => {
+                if (blob.size > 0) {
+                    this.userPhoto = window.URL.createObjectURL(new Blob([blob], { type: blob.type }));
+                    this.image = true;
+                }
+            })
+        },
         // handleListener() {
         //     bus.$on('collapse', this.handleBus);
         //     // 调用renderChart方法对图表进行重新渲染

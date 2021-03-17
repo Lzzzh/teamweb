@@ -24,15 +24,16 @@
           </el-form-item>
           <el-form-item label='个人头像'>
             <el-upload
+                ref="upload"
                 accept='image/jpeg,image/jpg,image/png'
                 :data='userIdForm'
                 :headers='headers'
+                :before-upload='beforeUpload'
                 class="upload-demo"
-                action="http://localhost:8093/file/uploadUserPhoto"
-                multiple>
+                action="http://localhost:8093/file/uploadUserPhoto">
               <i class="el-icon-upload"></i>
               <div class="el-upload__text"><em>点击上传</em></div>
-              <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+              <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过1M</div>
             </el-upload>
           </el-form-item>
           <el-form-item>
@@ -42,13 +43,6 @@
         </el-form>
       </div>
     </div>
-    <el-dialog title="裁剪图片" :visible.sync="dialogVisible" width="30%">
-      <vue-cropper ref='cropper' :src="imgSrc" :ready="cropImage" :zoom="cropImage" :cropmove="cropImage" style="width:100%;height:300px;"></vue-cropper>
-      <span slot="footer" class="dialog-footer">
-          <el-button @click="cancelCrop">取 消</el-button>
-          <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -84,17 +78,18 @@ export default {
         },
         rules: {
           // userPassword: [{ trigger: 'blur', validator: validatePass}],
-          userPasswordConfirm: [{ trigger: 'blur', validator: validatePass2 }]
+            userPasswordConfirm: [{ trigger: 'blur', validator: validatePass2 }]
         },
-          headers: {
-              Authorization: localStorage.getItem('Authorization')
-          }
+        headers: {
+            Authorization: localStorage.getItem('Authorization')
+        }
       };
     },
   components: {
     VueCropper
   },
   methods: {
+    //提交表单
     onSubmit() {
       this.userForm.userId = localStorage.getItem("userId");
       if (this.userForm.userPassword === this.userForm.userPasswordConfirm) {
@@ -103,42 +98,26 @@ export default {
       }else{
         this.$message.error('两次输入的密码不一致！');
         this.$refs.userForm.resetFields();
+        this.$refs.upload.clearFiles();
       }
-
+    },
+    //限制大小
+    beforeUpload(file) {
+      const size = file.size / 1024 / 1024;
+      if (size > 1) {
+          this.$message.error("文件大小不能超过1M！");
+          return false;
+      }else {
+          this.$message.success("上传成功！");
+          return file;
+      }
     },
     resetForm() {
-      this.$refs.userForm.resetFields();
-      this.$message.success('已清空所有空格');
+        this.$refs.userForm.resetFields();
+        this.$refs.upload.clearFiles();
+        this.$message.success('已清空所有空格');
     },
-    setImage(e){
-      const file = e.target.files[0];
-      if (!file.type.includes('image/')) {
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        this.dialogVisible = true;
-        this.imgSrc = event.target.result;
-        this.$refs.cropper && this.$refs.cropper.replace(event.target.result);
-      };
-      reader.readAsDataURL(file);
-    },
-    cropImage () {
-      this.cropImg = this.$refs.cropper.getCroppedCanvas().toDataURL();
-    },
-    cancelCrop(){
-      this.dialogVisible = false;
-      this.cropImg = this.defaultSrc;
-    },
-    imageuploaded(res) {
-      console.log(res)
-    },
-    handleError(){
-      this.$notify.error({
-        title: '上传失败',
-        message: '图片上传接口上传失败，可更改为自己的服务器接口'
-      });
-    }
+
   }
 
 };

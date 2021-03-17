@@ -19,6 +19,7 @@
                         ref="upload"
                         action="http://localhost:8093/file/sharePaper"
                         :file-list="fileList"
+                        :before-upload='beforeUpload'
                         :on-change='handleChange'
                         :auto-upload="false">
                         <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -57,6 +58,7 @@ export default {
         this.getUserList();
     },
     methods: {
+        //获取收件人列表
         getUserList() {
             this.$axios.get('/getUserList')
                 .then(responseData => {
@@ -74,6 +76,7 @@ export default {
                     this.userList = userList;
                 })
         },
+        //上传论文
         submitUpload() {
             const listLen = this.$refs.pageForm.model.receiverList.length;
             const fileLen = this.$refs.upload.uploadFiles.length;
@@ -85,17 +88,24 @@ export default {
                 })
                 this.pageForm.receiverList = list;
                 this.$refs.upload.submit();
-                this.$message.success("上传成功！");
-                // this.$refs.pageForm.resetFields();
-                this.$refs.fileList.resetFields();
+                this.$refs['pageForm'].resetFields();
+                this.$refs.upload.clearFiles();
             }else if (listLen === 0){
                 this.$message.error("收件人不能为空！");
             }else {
                 this.$message.error("文件不能为空！");
             }
         },
-        handleChange() {
-            console.log(this.pageForm.receiverList)
+        //限制大小
+        beforeUpload(file) {
+            const size = file.size / 1024 / 1024;
+            if (size > 10) {
+                this.$message.error("文件大小不能超过10M！");
+                return false;
+            }else {
+                this.$message.success("上传成功！");
+                return file;
+            }
         }
     }
 };
