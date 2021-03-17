@@ -29,8 +29,8 @@
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-lx-people grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">1234</div>
-                                    <div>用户访问量</div>
+                                    <div class="grid-num">{{projectCount}}</div>
+                                    <div>项目数量</div>
                                 </div>
                             </div>
                         </el-card>
@@ -40,7 +40,7 @@
                             <div class="grid-content grid-con-2">
                                 <i class="el-icon-lx-notice grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">321</div>
+                                    <div class="grid-num">{{messageCount}}</div>
                                     <div>系统消息</div>
                                 </div>
                             </div>
@@ -51,8 +51,8 @@
                             <div class="grid-content grid-con-3">
                                 <i class="el-icon-lx-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">5000</div>
-                                    <div>数量</div>
+                                    <div class="grid-num">{{paperCount}}</div>
+                                    <div>论文数量</div>
                                 </div>
                             </div>
                         </el-card>
@@ -125,6 +125,9 @@ export default {
                 }
               ]
             },
+            paperCount: 0,
+            messageCount: 0,
+            projectCount: 0
 
         };
     },
@@ -156,6 +159,9 @@ export default {
   created() {
       this.getTodoList();
       this.getUserPhoto();
+      this.getProjectCount();
+      this.getMessageCount();
+      this.getPaperCount();
   },
   methods: {
         changeDate() {
@@ -228,6 +234,48 @@ export default {
                 }
             })
         },
+        getProjectCount() {
+            const userId = localStorage.getItem('userId')
+            if (this.authority == 0) {
+                this.$axios.get('/studentProjectCount', {
+                    params: {
+                        'userId': userId
+                    }
+                }).then((res) => {
+                    this.projectCount = res.data.data;
+                })
+            }else if (this.authority == 1) {
+                this.$axios.get('/teacherProjectCount', {
+                    params: {
+                        'userId': userId
+                    }
+                }).then((res) => {
+                    this.projectCount = res.data.data;
+                })
+            }
+
+        },
+        getMessageCount() {
+          const userId = localStorage.getItem('userId')
+          this.$axios.get('/messageCount', {
+              params: {
+                  'userId': userId
+              }
+          }).then((res) => {
+              this.messageCount = res.data.data;
+          })
+        },
+        getPaperCount() {
+          const userId = localStorage.getItem('userId')
+          this.$axios.get('/paperCount', {
+              params: {
+                  'userId': userId
+              }
+          }).then((res) => {
+              this.paperCount = res.data.data;
+          })
+        },
+
         // handleListener() {
         //     bus.$on('collapse', this.handleBus);
         //     // 调用renderChart方法对图表进行重新渲染
