@@ -56,7 +56,8 @@ router.beforeEach((to, from, next) => {
             next('/login');
         } else {
             axios.get('/testToken').then((res) => {
-                const code = res.status;
+                const code = res.data.code;
+                console.log(code)
                 if (code === 200) {
                     next();
                 }else {
