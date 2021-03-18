@@ -48,6 +48,7 @@
 
 <script>
 import VueCropper from 'vue-cropperjs';
+import {Encrypt} from "@/utils/secret"
 export default {
     name: 'PersonalCenter',
     data () {
@@ -93,6 +94,8 @@ export default {
     onSubmit() {
       this.userForm.userId = localStorage.getItem("userId");
       if (this.userForm.userPassword === this.userForm.userPasswordConfirm) {
+        this.userForm.userPassword = Encrypt(this.userForm.userPassword);
+        this.userForm.userPasswordConfirm = Encrypt(this.userForm.userPasswordConfirm);
         this.$axios.post('/updateUser', this.userForm)
         this.$message.success('提交成功！');
       }else{
