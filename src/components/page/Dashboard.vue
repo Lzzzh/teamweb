@@ -27,7 +27,7 @@
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-1">
-                                <i class="el-icon-lx-people grid-con-icon"></i>
+                                <i class="el-icon-menu grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">{{projectCount}}</div>
                                     <div>项目数量</div>
@@ -49,7 +49,7 @@
                     <el-col :span="8">
                         <el-card shadow="hover" :body-style="{padding: '0px'}">
                             <div class="grid-content grid-con-3">
-                                <i class="el-icon-lx-goods grid-con-icon"></i>
+                                <i class="el-icon-document grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">{{paperCount}}</div>
                                     <div>论文数量</div>

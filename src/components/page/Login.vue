@@ -28,7 +28,7 @@
 
 <script>
 import {mapMutations} from "vuex";
-
+import {Encrypt} from "@/utils/secret"
 export default {
     data: function() {
         return {
@@ -51,7 +51,7 @@ export default {
                 if (valid) {
                     this.$axios.post('/login', {
                         userId: this.param.userid,
-                        userPassword: this.param.password
+                        userPassword: Encrypt(this.param.password)
                     }).then(successResponse => {
                         if (successResponse.data.code === 200) {
                             const data = successResponse.data.data;

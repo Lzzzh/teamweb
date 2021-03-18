@@ -65,7 +65,22 @@ export default {
             return username ? username : this.name;
         }
     },
+    created() {
+        this.getUserPhoto();
+        this.getMessageCount();
+    },
     methods: {
+        getMessageCount() {
+            const userId = localStorage.getItem('userId')
+            this.$axios.get('/messageCount', {
+                params: {
+                    'userId': userId
+                }
+            }).then((res) => {
+                this.messageCount = res.data.data;
+                localStorage.setItem('messageCount', res.data.data)
+            })
+        },
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {

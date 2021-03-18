@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'; // 默认主题
 import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
+import el from 'element-ui/src/locale/lang/el';
 
 //引入axios
 const axios = require('axios');
@@ -40,6 +41,10 @@ Vue.use(ElementUI, {
     }
 });*/
 
+
+
+
+
 //新钩子
 router.beforeEach((to, from, next) => {
     document.title = `${to.meta.title} | 信息学院团队管理系统`;
@@ -50,8 +55,18 @@ router.beforeEach((to, from, next) => {
         if (!token || token === 'null' || token === '') {
             next('/login');
         } else {
-            next();
+            axios.get('/testToken').then((res) => {
+                const code = res.status;
+                if (code === 200) {
+                    next();
+                }else {
+                    next('/login');
+                }
+            })
         }
+
+
+
     }
 });
 
@@ -66,7 +81,6 @@ axios.interceptors.request.use(
     error => {
         return Promise.reject(error);
     });
-
 
 
 new Vue({
