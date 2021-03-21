@@ -3,6 +3,19 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
+const home = () => import(/* webpackChunkName: "demo" */ '../components/common/Home.vue')
+const dashboard = () => import(/* webpackChunkName: "demo" */ '../components/page/Dashboard.vue')
+const table = () => import(/* webpackChunkName: "demo" */ '../components/page/BaseTable.vue')
+const tabs = () => import(/* webpackChunkName: "demo" */ '../components/page/Tabs.vue')
+const sendmessage = () => import(/* webpackChunkName: "demo" */ '../components/page/SendMessage.vue')
+const form = () => import(/* webpackChunkName: "demo" */ '../components/page/BaseForm.vue')
+const permission = () => import(/* webpackChunkName: "demo" */ '../components/page/Permission.vue')
+const four = () => import(/* webpackChunkName: "demo" */ '../components/page/404.vue')
+const three = () => import(/* webpackChunkName: "demo" */ '../components/page/403.vue')
+const sharepaper = () => import(/* webpackChunkName: "demo" */ '../components/page/SharePaper.vue')
+const readpaper = () => import(/* webpackChunkName: "demo" */ '../components/page/ReadPaper.vue')
+const personalcenter = () => import(/* webpackChunkName: "demo" */ '../components/page/PersonalCenter.vue')
+const login = () => import(/* webpackChunkName: "demo" */ '../components/page/Login.vue')
 export default new Router({
     mode: 'history',
     routes: [
@@ -12,70 +25,70 @@ export default new Router({
         },
         {
             path: '/',
-            component: () => import(/* webpackChunkName: "home" */ '../components/common/Home.vue'),
+            component: home,
             meta: { title: '自述文件'},
             children: [
                 {
                     path: '/dashboard',
-                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Dashboard.vue'),
+                    component: dashboard,
                     meta: { title: '主页' }
                 },
                 {
                     path: '/table',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
+                    component: table,
                     meta: { title: '项目列表' }
                 },
                 {
                     path: '/tabs',
-                    component: () => import(/* webpackChunkName: "tabs" */ '../components/page/Tabs.vue'),
+                    component: tabs,
                     meta: { title: '消息中心' }
                 },
                 {
                     path: '/sendMessage',
-                    component: () => import(/* webpackChunkName: "sendMessage" */ '../components/page/SendMessage.vue'),
+                    component: sendmessage,
                     meta: {title: '发送消息'}
                 },
                 {
                     path: '/form',
-                    component: () => import(/* webpackChunkName: "form" */ '../components/page/BaseForm.vue'),
+                    component: form,
                     meta: { title: '基本表单' }
                 },
                 {
                     // 权限页面
                     path: '/permission',
-                    component: () => import(/* webpackChunkName: "permission" */ '../components/page/Permission.vue'),
+                    component: permission,
                     meta: { title: '权限测试', permission: true }
                 },
                 {
                     path: '/404',
-                    component: () => import(/* webpackChunkName: "404" */ '../components/page/404.vue'),
+                    component: four,
                     meta: { title: '404' }
                 },
                 {
                     path: '/403',
-                    component: () => import(/* webpackChunkName: "403" */ '../components/page/403.vue'),
+                    component: three,
                     meta: { title: '403' }
                 },
                 {
                     path: '/sharePaper',
-                    component: () => import(/* webpackChunkName: "sharePaper" */ '../components/page/SharePaper.vue'),
+                    component: sharepaper,
                     meta: {title: '分享论文'}
                 },
                 {
                     path: '/readPaper',
-                    component: () => import(/* webpackChunkName: "readPaper" */ '../components/page/ReadPaper.vue'),
+                    component: readpaper,
                     meta: {title: '阅读论文'}
                 },
                 {
                     path: '/personalCenter',
-                    component: () => import(/* webpackChunkName: "personalCenter" */ '../components/page/PersonalCenter.vue'),
+                    component: personalcenter,
                     meta: {title: '个人中心' }
                 }
             ]
         },
         {
             path: '/login',
-            component: () => import(/* webpackChunkName: "login" */ '../components/page/Login.vue'),
+            component: login,
             meta: { title: '登录' }
         },
         {
